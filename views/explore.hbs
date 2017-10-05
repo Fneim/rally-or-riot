@@ -4,19 +4,22 @@
             <div class="col s12"><span class="flow-text">
                 <p>
                     <h5>Welcome Back, <a href="profile/{{user.username}}">{{user.username}}</a>!</h5>
-                    <h6>Explore Your Next Rally or Riot</h6></span>
+                    <h6>Find Your Next Rally or Riot!</h6></span>
                 </p>
             </div>
-            <div class="col s12">
-                <!-- Dropdown Trigger -->
-                <a class='dropdown-button btn grey' data-beloworigin="true" href='#' data-activates='categories'>Category</a>
-                <ul id='categories' class='dropdown-content'>
-                    <li><a href="#!">one</a></li>
-                    <li><a href="#!">two</a></li>
-                    <li><a href="#!">three</a></li>
-                    <li><a href="#!"><i class="material-icons">view_module</i>four</a></li>
-                    <li><a href="#!"><i class="material-icons">cloud</i>five</a></li>
-                </ul>
+            <div class="input-field col s12 m6">
+                      <select class="icons">
+                        <option value="" data-icon="assets/img/stock01.jpeg" class=" left circle">Concerts</option>
+                        <option value="" data-icon="assets/img/stock02.jpeg"  class="left circle">Parties</option>
+                        <option value="" data-icon="assets/img/stock03.jpeg" class="left circle">Networking</option>
+                        <option value="" data-icon="assets/img/Eating.jpg" class="left circle">Eating</option>
+                        <option value="" data-icon="assets/img/Political.jpg" class=" left circle">Political</option>
+                        <option value="" data-icon="assets/img/studying.png"  class="left circle">Studying</option>
+                        <option value="" data-icon="assets/img/exercise.jpg" class="left circle">Exercising</option>
+                        <option value="" data-icon="assets/img/yardsale.jpg" class="left circle">For Sale</option>
+                        <option value="" data-icon="assets/img/Uncategorized.png" class="left circle">Uncategorized</option>
+                      </select>
+                      </div>
 
                 <a id="beaconCreate" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">settings_remote</i></a>
             </div>
@@ -49,8 +52,8 @@
                         <option data-icon="images/sample-1.jpg" class="circle" value="politcal">Political</option>
                         <option data-icon="images/sample-1.jpg" class="circle" value="social">Social</option>
                         <option data-icon="images/sample-1.jpg" class="circle" value="study">Studying</option>
-                        <option data-icon="images/sample-1.jpg" class="circle" value="uncategorized" selected>Uncategorized</option>
                         <option data-icon="images/sample-1.jpg" class="circle" value="yardsale">Yard Sale</option>
+                        <option data-icon="images/sample-1.jpg" class="circle" value="uncategorized" selected>Uncategorized</option>
                     </select>
                     <label for="category">Category</label>
                 </div>
@@ -74,25 +77,44 @@
                     <label for="female">Allow Women</label>
                 </div>
             </div> -->
-            <button class="btn waves-effect waves-light grey" id="beaconSubmit" type="submit">Create</button>
+            <button class="btn waves-effect waves-light grey" data-target="modal1" id="beaconSubmit" type="submit">Create</button>
         </form>
     </div>
 
     <div class="beacons">
         <div class="row">
-            <div class="col s12 m7 l7">
+            <div class="col s12 m7 l7" id="beacon-container">
+                <div class="card hoverable" id="loadingCard" style="display: none">
+                    <div class="card-content">
+                        <span class="card-title">Your Beacon is Being Created</span>
+                        <img src="/assets/img/loading.gif">
+                    </div>
+                </div>
                 {{#each beacon}}
-                    <div class="card">
+                    <div class="card hoverable">
                         <div class="card-content">
-                            <span class="card-title">{{this.name}}</span>
+                            <span class="card-title">{{this.name}}
+                                <span class="badge">
+                                    <i class="fa {{this.icon}}" aria-hidden="true"></i>
+                                    {{this.category}}
+                                </span>
+                            </span>
                             <p>{{this.activity}}</p>
+                            <p><i class="fa fa-map-marker" aria-hidden="true"></i> <a href="https://www.google.com/maps/search/?api=1&query={{this.lat}},{{this.lng}}" target="_blank">{{this.location}}</a></p>
+                            <p>
+                                <i class="fa fa-user-circle" aria-hidden="true"></i>
+                                <a href="/profile/{{User.username}}">{{User.username}}</a>
+                            </p>
+                        </div>
+                        <div id="bar">
+                            <div class="rallies" id="rallies-{{this.id}}">{{this.rallies}} rallies</div>
+                            <div class="riots" id="riots-{{this.id}}">{{this.riots}} riots</div>
                         </div>
                         <div class="card-action">
-                            <div class="beacon-votes">
-                                
+                            <div id="{{this.id}}">
+                                <span class="rallyBtn" id="rallyBtn-{{this.id}}"><img class="vote-ra" src="/assets/img/icon-rally.svg">Rally</span>
+                                <span class="riotBtn" id="riotBtn-{{this.id}}"><img class="vote-ri" src="/assets/img/icon-riot.svg">Riot</span>
                             </div>
-                            <a class="black-text" href="#"><img class="vote-ra" src="/assets/img/icon-rally.svg">Rally</a>
-                            <a class="black-text" href="#"><img class="vote-ri" src="/assets/img/icon-riot.svg">Riot</a>
                         </div>
                     </div>
                 {{/each}}
@@ -109,10 +131,6 @@
     </div>
 </div>
 <script>
-      // Note: This example requires that you consent to location sharing when
-      // prompted by your browser. If you see the error "The Geolocation service
-      // failed.", it means you probably did not give permission for the browser to
-      // locate you.
       var map, infoWindow;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -149,17 +167,11 @@
                               'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
       }
-    </script>
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwORWZDYOjHiXTWvwdeW04ecXeBuM1uqM&callback=initMap">
-    </script>
+</script>
+
+<script async
+        defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAwORWZDYOjHiXTWvwdeW04ecXeBuM1uqM&callback=initMap">
+</script>
 
 <script src="../assets/js/beacon.js"></script>
-    <script>
-    $('#beaconCreate').on('click', function(event){
-        $('#beaconForm').toggle(400);
-    });
-    $('document').ready(function() {
-        $('select').material_select();
-    });
-</script>

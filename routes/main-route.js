@@ -11,6 +11,7 @@ module.exports = function(app, passport) {
     app.get('/explore', isSignedIn, mainController.explore);
     app.get('/profile/:username?', isSignedIn, mainController.profile);
 
+    app.get('/beacon/votes', isSignedIn, mainController.votes);
 
     // POST ROUTES
     app.post('/signup', passport.authenticate('local-signup', {
@@ -24,6 +25,8 @@ module.exports = function(app, passport) {
     }));
 
     app.post("/beacon/new", isSignedIn, mainController.beacon);
+    app.post("/beacon/rally", isSignedIn, mainController.rally);
+    app.post("/beacon/riot", isSignedIn, mainController.riot);
 
     function isSignedIn(req, res, next) {
         if (req.isAuthenticated())
